@@ -12,9 +12,9 @@ jobs:
     steps:
       - checkout
       - run: echo "Double Trouble"
-  workflows:
-    version: 2
-    oreo_mocha:
-      jobs:
-        - oreo
-        - mocha
+workflows:
+  version: 2
+  oreo_mocha:
+    jobs:
+      - oreo
+      - mocha
