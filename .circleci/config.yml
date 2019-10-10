@@ -1,20 +1,34 @@
 version: 2
 jobs:
-  oreo:
+  build:
     docker:
-      - image: circleci/ruby:2.4.1
+      - image: circleci/node:latest
     steps:
       - checkout
-      - run: echo "A first hello"
-  mocha:
+      - run: echo "installing packages..."
+      - run: npm install
+      - run: CI=true npm run build
+  test:
     docker:
-      - image: circleci/ruby:2.4.1
+      - image: circleci/node:latest
     steps:
       - checkout
-      - run: echo "Double Trouble"
+      - run: echo "testing code..."
+      - run: npm install
+      - run: npm test
+  start_test:
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
+      - run: echo "Preparing for test..."
 workflows:
   version: 2
-  oreo_mocha:
+  build_test_and_lint:
     jobs:
-      - oreo
-      - mocha
+      - build
+      - start_test
+      - test:
+        # This makes sure that test container will run after the start_test container completed
+          requires:
+            - start_test
